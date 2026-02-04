@@ -1,0 +1,60 @@
+@startuml UC7 Auction Item Upload
+title UC7: Auction Item Upload Activity Diagram
+
+start
+
+:Seller Clicks "Create Auction" Button;
+
+:Verify User is Authenticated;
+
+if (Is User Authenticated?) then (Yes)
+  :Display Auction Creation Form;
+  
+  repeat
+    :Seller Enters Item Information:\n- Item Name\n- Description\n- Keywords\n- Starting Bid Price\n- Auction Duration\n- Auction Type (Forward)\n- Shipping Days\n- Expedited Shipping Cost\n- Item Image(s);
+    
+    :Validate Form Fields;
+    
+    if (All required fields valid?) then (Yes)
+      :Validate Business Rules:\n- Starting Price > 0\n- Duration >= 1 hour\n- Duration <= 30 days;
+      
+      if (Business rules valid?) then (Yes)
+        :Upload Item Image(s)\nto File Storage;
+        :Generate Unique Item ID;
+        :Calculate Auction End Time:\ncurrentTime + duration;
+        :Store Item in Catalogue Database:\n- Item Details\n- Seller ID\n- Start Time\n- End Time\n- Initial Price\n- Status: ACTIVE;
+        :Create Auction Record\nin Auction Database:\n- Item ID\n- Current Price = Starting Price\n- Highest Bidder = NULL\n- Status: ACTIVE;
+        :Initialize Auction Timer Scheduler;
+        :Index Item for Search (Keywords);
+        :Display Success Message:\n"Auction Created Successfully!"\n- Show Item ID\n- Show End Time;
+        :Provide Options:\n- View Item Listing\n- Create Another Auction\n- Return to Dashboard;
+        
+        :User Selects Action;
+        
+        switch (Action?)
+        case (View Item)
+          :Navigate to Item Detail Page;
+        case (Create Another)
+          :Loop Back to Form;
+        case (Return Dashboard)
+          :Navigate to Dashboard;
+        endswitch
+        
+        :Log Auction Creation\nin Audit Trail;
+        :Send Notification to Seller:\n"Auction is Live";
+        stop
+        
+      else (Invalid)
+        :Display Error:\n"Invalid Auction Parameters";
+      endif
+    else (Missing/Invalid)
+      :Display Error Messages:\n- Highlight Invalid Fields\n- Show Requirements;
+    endif
+  repeat while (Retry?)
+  
+else (No)
+  :Redirect to Sign-In Page;
+  stop
+endif
+
+@enduml
