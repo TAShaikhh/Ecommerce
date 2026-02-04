@@ -1,0 +1,49 @@
+@startuml UC5 Payment Process
+title UC5: Payment Process Activity Diagram
+
+start
+
+:User Clicks "Pay Now" Button;
+
+:Verify User is the Auction Winner;
+
+if (Is User the Winner?) then (Yes)
+  :Retrieve User's Shipping Address\nfrom Database;
+  :Display Payment Form:\n- Pre-filled Address\n- Item Price\n- Shipping Cost\n- Total Amount;
+  
+  repeat
+    :User Enters Payment Information:\n- Card Number\n- Name on Card\n- Expiration Date\n- Security Code;
+    :Validate Form Fields;
+    
+    if (All fields complete?) then (Yes)
+      :User Clicks "Submit" Button;
+      :Validate Payment Details Format;
+      
+      if (Valid format?) then (Yes)
+        :Process Payment through\nPayment Gateway;
+        
+        if (Payment Successful?) then (Yes)
+          :Update Payment Record\nStatus to "COMPLETED";
+          :Update Auction Status\nto "PAID";
+          :Remove Item from\nActive Catalogue;
+          :Generate Transaction ID\nand Store Payment Record;
+          :Proceed to Receipt &\nShipment Details Page (UC6);
+          stop
+        else (Failed)
+          :Display Error:\n"Payment Failed.\nPlease try again";
+        endif
+      else (Invalid)
+        :Display Error:\n"Invalid Payment Information";
+      endif
+    else (Missing/Invalid)
+      :Display Error Messages\nfor Invalid Fields;
+    endif
+  repeat while (Retry?)
+  
+else (No)
+  :Display Error:\n"You did not win this auction";
+  :Redirect to Catalogue Page;
+  stop
+endif
+
+@enduml
