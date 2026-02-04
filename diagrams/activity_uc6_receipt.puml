@@ -1,0 +1,47 @@
+@startuml UC6 Receipt and Shipment
+title UC6: Receipt and Shipment Details Activity Diagram
+
+start
+
+:Payment Successfully Completed;
+
+:Retrieve Transaction Details\nfrom Payment Service;
+
+:Retrieve Item Details\nfrom Catalogue Service;
+
+:Calculate Shipping Timeline\nbased on Item Shipping Days;
+
+:Generate Unique Order ID;
+
+:Create Receipt Record\nin Database;
+
+:Format Receipt Data:\n- Order ID\n- Transaction ID\n- Item Name\n- Item Price\n- Shipping Type\n- Shipping Cost\n- Total Amount Paid\n- Payment Method\n- Transaction Date;
+
+:Format Shipping Data:\n- Recipient Name\n- Shipping Address\n- Estimated Delivery\n  ("Ships in X days")\n- Tracking (TBD);
+
+:Send Email Receipt\nto User's Email Address;
+
+:Display Receipt and\nShipment Page:\n- Order Summary\n- Payment Details\n- Shipping Info;
+
+:Provide Options:\n- Print Receipt\n- Download PDF\n- Return to Home;
+
+:User Selects Action;
+
+switch (Action?)
+case (Print Receipt)
+  :Open Browser Print Dialog;
+case (Download PDF)
+  :Generate PDF File & Download;
+case (Return Home)
+  :Navigate to Home Page;
+endswitch
+
+:Log Transaction Completion\nin Audit Trail;
+
+:Update User's Order History;
+
+:Notify Seller:\n"Item Sold"\n"Payment Received";
+
+stop
+
+@enduml
