@@ -1,0 +1,40 @@
+@startuml UC2 Browse Catalogue
+title UC2: Browse Catalogue of Auctioned Items
+
+actor User
+participant "Frontend" as FE
+participant "Gateway\nService" as GW
+participant "Catalogue\nService" as CAT
+participant "Auction\nService" as AUC
+database "Catalogue DB" as CATDB
+
+User -> FE: Enter Search Keyword
+activate FE
+FE -> GW: GET /api/catalogue/search?\nkeyword={keyword}\nAuthorization: Bearer {token}
+activate GW
+GW -> GW: validateToken(token)
+GW -> CAT: searchItems(keyword)
+activate CAT
+CAT -> CATDB: SELECT * FROM items\nWHERE (name LIKE '%keyword%'\nOR description LIKE '%keyword%'\nOR keywords LIKE '%keyword%')\nAND status='ACTIVE'
+activate CATDB
+CATDB --> CAT: List<Item>
+deactivate CATDB
+CAT --> GW: List<ItemDTO>
+deactivate CAT
+
+loop For each item
+    GW -> AUC: getCurrentBidInfo(itemId)
+    activate AUC
+    AUC --> GW: BidInfo(currentPrice,\nhighestBidder,\nremainingTime)
+    deactivate AUC
+end
+
+GW -> GW: enrichItemsWithBidData()
+GW --> FE: 200 OK\n(List<ItemWithBidInfo>)
+deactivate GW
+FE --> User: Display Items\nwith Radio Buttons
+User -> FE: Select Item\n& Click BID
+FE --> User: Navigate to\nBidding Page
+deactivate FE
+
+@enduml
