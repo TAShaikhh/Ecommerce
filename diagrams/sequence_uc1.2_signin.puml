@@ -1,0 +1,36 @@
+@startuml UC1.2 User Sign-In
+title UC1.2: User Sign-In Sequence Diagram
+
+actor User
+participant "Frontend" as FE
+participant "Gateway\nService" as GW
+participant "IAM\nService" as IAM
+database "User DB" as DB
+
+User -> FE: Click Sign-In
+activate FE
+FE --> User: Display Sign-In Form
+User -> FE: Enter Username\n& Password
+FE -> GW: POST /api/auth/signin\n(SignInRequest)
+activate GW
+GW -> IAM: authenticateUser(\nusername, password)
+activate IAM
+IAM -> DB: SELECT * FROM users\nWHERE username=?
+activate DB
+DB --> IAM: User(userId,\nhashedPassword,\nuserData)
+deactivate DB
+IAM -> IAM: verifyPassword(\npassword,\nhashedPassword)
+IAM -> IAM: generateJWT(userId)
+IAM -> DB: UPDATE users SET\nlastLogin=NOW()\nWHERE userId=?
+activate DB
+DB --> IAM: Success
+deactivate DB
+IAM --> GW: AuthResponse\n(token, userId, userData)
+deactivate IAM
+GW --> FE: 200 OK\n(SignInResponse)
+deactivate GW
+FE -> FE: Store JWT Token\nin localStorage
+FE --> User: Redirect to\nCatalogue Page
+deactivate FE
+
+@enduml
