@@ -1,0 +1,38 @@
+@startuml UC4 Auction Ended
+title UC4: Auction Ended Activity Diagram
+
+start
+
+:Auction Timer Expires;
+
+:Mark Auction Status as "ENDED";
+
+:Identify Highest Bidder;
+
+if (Were there any bids placed?) then (Yes)
+  :Notify All Bidders:\n"Auction Ended";
+  :Create Payment Record\nfor Winner;
+  :Display "Pay Now" Page\nto Winner;
+  :Retrieve User's\nShipping Address;
+  :Calculate Shipping\nCosts (Standard);
+  :Display:\n- Item Details\n- Final Bid Price\n- Shipping Cost\n- Expedited Option\n- Total Amount;
+  
+  if (User Selects Expedited Shipping?) then (Yes)
+    :Add Expedited\nShipping Cost;
+  else (No)
+    :Keep Standard\nShipping Cost;
+  endif
+  
+  :Update Total Amount\nwith Shipping Choice;
+  :Display Updated\n"Pay Now" Page;
+  :Wait for User Action\n(Click "Pay Now");
+  :Proceed to Payment\nProcess (UC5);
+  
+else (No)
+  :Remove Item from\nCatalogue\n(No Winner);
+  :Notify Seller:\n"Item Not Sold";
+endif
+
+stop
+
+@enduml
