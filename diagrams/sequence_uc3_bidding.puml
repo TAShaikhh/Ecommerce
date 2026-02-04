@@ -1,0 +1,66 @@
+@startuml UC3 Bidding Process
+title UC3: Bidding Process Sequence Diagram
+
+actor "User\n(Bidder)" as User
+participant "Frontend" as FE
+participant "Gateway\nService" as GW
+participant "Auction\nService" as AUC
+database "Auction DB" as DB
+participant "WebSocket\nClients" as WS
+
+User -> FE: View Item Details
+activate FE
+FE -> GW: GET /api/auction/{itemId}
+activate GW
+GW -> AUC: getAuctionDetails(itemId)
+activate AUC
+AUC -> DB: SELECT * FROM auctions\nWHERE itemId=?
+activate DB
+DB --> AUC: Auction(itemId,\ncurrentPrice,\nhighestBidderId,\nendTime)
+deactivate DB
+AUC --> GW: AuctionDTO
+deactivate AUC
+GW --> FE: 200 OK\n(AuctionDetails)
+deactivate GW
+FE --> User: Display Item\nCurrent Price\nHighest Bidder\nRemaining Time
+FE -> WS: Subscribe to WebSocket\n/auction/{itemId}
+activate WS
+
+User -> FE: Enter Bid Amount
+FE -> GW: POST /api/auction/{itemId}/bid\n{bidAmount, userId}
+activate GW
+GW -> AUC: validateAndPlaceBid(\nitemId, userId, bidAmount)
+activate AUC
+AUC -> DB: SELECT currentPrice, endTime\nFROM auctions\nWHERE itemId=?\nFOR UPDATE
+activate DB
+DB --> AUC: currentPrice, endTime
+deactivate DB
+AUC -> AUC: validateBid():\n- bidAmount > currentPrice\n- auction not expired
+AUC -> DB: UPDATE auctions\nSET currentPrice=bidAmount,\nhighestBidderId=userId\nWHERE itemId=?
+activate DB
+DB --> AUC: Success
+deactivate DB
+AUC -> DB: INSERT INTO bid_history\nVALUES(bidId, itemId,\nuserId, bidAmount, timestamp)
+activate DB
+DB --> AUC: bidId
+deactivate DB
+AUC --> GW: BidResponse\n(success, newPrice)
+deactivate AUC
+GW --> FE: 200 OK\n(BidConfirmed)
+deactivate GW
+
+AUC -> WS: broadcastBidUpdate(\nitemId, newPrice, bidderId)
+WS --> FE: WebSocket BidUpdate Event\n(to all clients)
+deactivate WS
+
+FE --> User: Update UI:\n- New Current Price\n- New Highest Bidder\n- Success Message
+deactivate FE
+
+note over AUC,DB
+When Timer Expires:
+- endAuction(itemId)
+- UPDATE status='ENDED'
+- broadcastAuctionEnded()
+end note
+
+@enduml
