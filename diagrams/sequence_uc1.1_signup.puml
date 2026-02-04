@@ -1,0 +1,35 @@
+@startuml UC1.1 User Sign-Up
+title UC1.1: User Sign-Up Sequence Diagram
+
+actor User
+participant "Frontend" as FE
+participant "Gateway\nService" as GW
+participant "IAM\nService" as IAM
+database "User DB" as DB
+
+User -> FE: Click Sign-Up
+activate FE
+FE --> User: Display Sign-Up Form
+User -> FE: Enter Details\n(username, password,\nfirstName, lastName,\naddress)
+FE -> GW: POST /api/auth/signup\n(SignUpRequest)
+activate GW
+GW -> GW: validateSignUpData()
+GW -> IAM: createUser(UserDTO)
+activate IAM
+IAM -> DB: checkUserExists(username)
+activate DB
+DB --> IAM: false
+deactivate DB
+IAM -> IAM: hashPassword(password)
+IAM -> DB: INSERT INTO users\nVALUES(...)
+activate DB
+DB --> IAM: userId
+deactivate DB
+IAM --> GW: UserResponse\n(userId, token)
+deactivate IAM
+GW --> FE: 200 OK\n(SignUpResponse)
+deactivate GW
+FE --> User: Display Success Message\n& Redirect to Dashboard
+deactivate FE
+
+@enduml
