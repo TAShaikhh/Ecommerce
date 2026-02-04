@@ -1,0 +1,100 @@
+@startuml System Architecture
+title Auction E-Commerce System - Component Architecture
+
+!define RECTANGLE class
+
+skinparam component {
+    BackgroundColor<<frontend>> LightBlue
+    BackgroundColor<<middleware>> LightGreen
+    BackgroundColor<<backend>> LightYellow
+    BackgroundColor<<database>> LightGray
+    BackgroundColor<<messaging>> LightPink
+}
+
+package "Front-End Tier" <<frontend>> {
+    [React.js SPA] as FE
+    note right of FE
+        - HTML5 / CSS3 / JavaScript
+        - User Interface Components
+        - Sign-Up/Sign-In Forms
+        - Catalogue Browser
+        - Bidding Interface
+        - Payment Forms
+        - Receipt Display
+    end note
+}
+
+package "Middle Tier" <<middleware>> {
+    [API Gateway\nService] as GW
+    note right of GW
+        - Request Routing
+        - JWT Validation
+        - Rate Limiting
+        - Circuit Breaker
+        - Load Balancing
+        - WebSocket Management
+    end note
+}
+
+package "Back-End Tier" <<backend>> {
+    package "Microservices" {
+        [IAM Service\n:8081] as IAM
+        [Catalogue Service\n:8082] as CAT
+        [Auction Service\n:8083] as AUC
+        [Payment Service\n:8084] as PAY
+        [Notification Service\n:8085] as NOT
+    }
+    
+    package "Databases" <<database>> {
+        database "User DB\n(SQLite)" as USERDB
+        database "Catalogue DB\n(SQLite)" as CATDB
+        database "Auction DB\n(SQLite)" as AUCDB
+        database "Payment DB\n(SQLite)" as PAYDB
+        database "Notification DB\n(SQLite)" as NOTDB
+    }
+    
+    [Message Broker\nRabbitMQ/Kafka] as MB <<messaging>>
+}
+
+' Frontend to Gateway
+FE --> GW : REST APIs (HTTPS)\nWebSocket
+
+' Gateway to Services
+GW --> IAM : REST
+GW --> CAT : REST
+GW --> AUC : REST / WebSocket
+GW --> PAY : REST
+GW --> NOT : REST
+
+' Services to Databases
+IAM --> USERDB : JDBC
+CAT --> CATDB : JDBC
+AUC --> AUCDB : JDBC
+PAY --> PAYDB : JDBC
+NOT --> NOTDB : JDBC
+
+' Services to Message Broker
+IAM ..> MB : Publish Events
+CAT ..> MB : Publish Events
+AUC ..> MB : Publish/Subscribe
+PAY ..> MB : Subscribe Events
+NOT ..> MB : Subscribe Events
+
+' Inter-service Communication
+CAT ..> AUC : REST (Get Bid Info)
+AUC ..> PAY : REST (Create Payment)
+PAY ..> IAM : REST (Get User Address)
+PAY ..> NOT : REST (Send Receipt Email)
+AUC ..> NOT : REST (Send Notifications)
+
+note bottom of MB
+    Event Topics:
+    - auction.ended
+    - bid.placed
+    - payment.completed
+    - user.registered
+    - item.added
+    - notification.send
+end note
+
+@enduml
