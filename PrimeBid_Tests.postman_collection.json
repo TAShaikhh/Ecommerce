@@ -1,0 +1,88 @@
+{
+    "info": {
+        "name": "PrimeBid A3 Test Cases",
+        "description": "Robustness, scalability, and security tests for EECS 4413 Deliverable 3.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Security: Unauthenticated Bid Start",
+            "request": {
+                "method": "POST",
+                "header": [
+                    { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"itemId\": 1, \"maxBid\": 100, \"strategy\": \"SNIPER\"}"
+                },
+                "url": {
+                    "raw": "http://localhost:8080/auto-bid/start",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "8080",
+                    "path": ["auto-bid", "start"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Robustness: Negative Budget Limit",
+            "request": {
+                "method": "POST",
+                "header": [
+                    { "key": "Authorization", "value": "Bearer FAKE-TOKEN-REJECT" },
+                    { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"itemId\": 1, \"maxBid\": -50, \"strategy\": \"CONSERVATIVE\"}"
+                },
+                "url": {
+                    "raw": "http://localhost:8080/auto-bid/start",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "8080",
+                    "path": ["auto-bid", "start"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Robustness: Invalid JSON Payload",
+            "request": {
+                "method": "POST",
+                "header": [
+                    { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"itemId\": 1, \"maxBid\": \"text-string-fails-int-parsing\"}"
+                },
+                "url": {
+                    "raw": "http://localhost:8080/auto-bid/start",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "8080",
+                    "path": ["auto-bid", "start"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Functionality: Fetch Live Catalogue",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8080/catalogue/items",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "8080",
+                    "path": ["catalogue", "items"]
+                }
+            },
+            "response": []
+        }
+    ]
+}
