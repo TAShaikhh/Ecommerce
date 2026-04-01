@@ -48,6 +48,67 @@ For EECS 4413 Deliverable 3, the entire system (Frontend + 5 Backend Microservic
 docker-compose up -d --build
 ```
 
+### Launch Backend and Frontend with Docker
+
+If you want the exact launch flow separated by concern:
+
+1. Start the full backend stack plus frontend:
+
+```bash
+docker compose up -d --build
+```
+
+2. Verify the backend is running:
+
+```bash
+curl http://localhost:8080/health
+curl http://localhost:8081/actuator/health
+curl http://localhost:8082/actuator/health
+curl http://localhost:8083/actuator/health
+curl http://localhost:8084/actuator/health
+```
+
+3. Open the frontend:
+
+```text
+http://localhost:3000
+```
+
+4. If you only need to restart the frontend container after UI changes:
+
+```bash
+docker compose build frontend
+docker compose up -d frontend
+```
+
+5. If you only need to restart the backend services:
+
+```bash
+docker compose up -d iam catalogue auction payment gateway
+```
+
+### Apple Silicon (Mac ARM) Note
+
+If you are building this project on a Mac with an ARM processor (M1, M2, M3, or newer), keep the Docker base images below as-is:
+
+- The Java services should use `eclipse-temurin:17-jre` for their runtime stage.
+- Do not switch them to `eclipse-temurin:17-jre-alpine`, because that tag does not provide the required Linux `arm64` manifest and Docker builds fail with `no match for platform in manifest`.
+- The frontend should use `node:20-alpine`, because this project uses Next.js 16, which requires Node `>= 20.9.0`.
+
+If someone updates the Dockerfiles later, preserving these image tags will keep the project buildable on Apple Silicon Macs.
+
+### Windows Docker Note
+
+The Dockerfiles in this repository are currently configured around the Mac setup used during development and testing.
+
+If you are building on Windows, review the Dockerfiles before running a full build, especially:
+
+- Java runtime image tags used in the backend service Dockerfiles
+- frontend Node image/version assumptions
+- shell command differences between macOS/Linux and Windows
+
+In other words, the current Dockerfile setup should be treated as the Mac-first configuration. If a Windows build fails, update the Dockerfiles to match the platform/runtime requirements of your Windows Docker environment before rebuilding.
+
 ### Accessing the System
 - **Frontend (UI)**: [http://localhost:3000](http://localhost:3000)
 - **Gateway API**: `http://localhost:8080` (Internal microservices run on 8081-8084 and are hidden via Docker network, accessible only through the Gateway).
@@ -80,6 +141,71 @@ Linux/macOS:
 ```bash
 rm -f iam/data/*.db catalogue/data/*.db auction/data/*.db payment/data/*.db
 ```
+
+### Launch Backend Locally
+
+The backend consists of `iam`, `catalogue`, `auction`, `payment`, and `gateway`.
+
+1. Build all backend services:
+
+```bash
+for service in iam catalogue auction payment gateway; do
+  (cd "$service" && ./mvnw clean package -DskipTests)
+done
+```
+
+2. Start all backend services:
+
+```bash
+./run_all.sh
+```
+
+3. Verify the backend is available:
+
+```bash
+curl http://localhost:8080/health
+curl http://localhost:8080/ping/iam
+curl http://localhost:8080/ping/catalogue
+curl http://localhost:8080/ping/auction
+curl http://localhost:8080/ping/payment
+```
+
+Windows users can use:
+
+```cmd
+run_all.bat
+```
+
+### Launch Frontend Locally
+
+If you want to run the frontend outside Docker while keeping the backend local or Dockerized:
+
+1. Open a new terminal.
+2. Go into the frontend app:
+
+```bash
+cd frontend
+```
+
+3. Install dependencies:
+
+```bash
+npm install
+```
+
+4. Start the Next.js development server:
+
+```bash
+npm run dev
+```
+
+5. Open:
+
+```text
+http://localhost:3000
+```
+
+The frontend talks to the gateway on `http://localhost:8080`, so make sure the backend is already running before opening the UI.
 
 ### Build & Run All Services Locally
 

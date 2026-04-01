@@ -1,6 +1,6 @@
-# AI Usage Acknowledgement (Deliverable 2)
+# AI Usage Acknowledgement (Deliverable 3)
 
-For Deliverable 2, AI tools were used as a support aid during analysis, testing, and documentation.  
+For Deliverable 3, AI tools were used as a support aid during analysis, testing, and documentation.  
 AI was not used as an autonomous decision-maker; instead, it was used to accelerate drafting and review tasks while final responsibility remained with the team.
 
 ## Scope of AI Use

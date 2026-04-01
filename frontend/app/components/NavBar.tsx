@@ -13,6 +13,10 @@ export default function NavBar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  if (pathname === '/login' || pathname === '/signup') {
+    return null;
+  }
+
   useEffect(() => {
     hydrate();
   }, [hydrate]);

@@ -13,6 +13,7 @@ interface User {
 interface AuthState {
   token: string | null;
   user: User | null;
+  hydrated: boolean;
   setAuth: (token: string, user: User) => void;
   logout: () => Promise<void>;
   hydrate: () => Promise<void>;
@@ -23,6 +24,7 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       token: null,
       user: null,
+      hydrated: false,
       setAuth: (token, user) => set({ token, user }),
       logout: async () => {
         try {
@@ -35,6 +37,7 @@ export const useAuthStore = create<AuthState>()(
         set({ token: null, user: null });
       },
       hydrate: async () => {
+        set({ hydrated: true });
         const { token, user } = get();
         if (token) {
           try {
@@ -57,6 +60,9 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'primebid-auth',
+      onRehydrateStorage: () => (state) => {
+        state?.hydrate();
+      },
     }
   )
 );

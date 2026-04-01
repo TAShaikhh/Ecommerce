@@ -11,7 +11,7 @@ import { ArrowRight, WarningCircle, CheckCircle } from '@phosphor-icons/react';
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { token, setAuth } = useAuthStore();
+  const { token, hydrated, setAuth } = useAuthStore();
   
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -21,10 +21,10 @@ function LoginContent() {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (token) {
+    if (hydrated && token) {
       router.replace('/catalogue');
     }
-  }, [token, router]);
+  }, [hydrated, token, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +41,7 @@ function LoginContent() {
         userId: response.userId,
         username: response.username,
       });
-      router.push('/catalogue');
+      router.replace('/catalogue');
     } catch (err: any) {
       setError(err.message || 'Failed to login');
     } finally {
@@ -50,7 +50,24 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2">
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 relative">
+      <div className="absolute inset-x-4 top-4 z-20 flex justify-center md:inset-x-auto md:right-6 md:left-auto md:justify-end">
+        <div className="flex w-full max-w-sm items-center justify-center gap-2 rounded-full border border-zinc-200 bg-white/95 px-3 py-2 shadow-sm backdrop-blur md:w-auto md:max-w-none">
+          <Link
+            href="/login"
+            className="rounded-full px-4 py-2 text-sm font-medium text-zinc-950 bg-zinc-100"
+          >
+            Sign in
+          </Link>
+          <Link
+            href="/signup"
+            className="rounded-full px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-950"
+          >
+            Create account
+          </Link>
+        </div>
+      </div>
+
       {/* Left: Branding Panel */}
       <div className="hidden md:flex flex-col justify-between p-12 bg-zinc-950 relative overflow-hidden min-h-screen">
         <div className="absolute inset-0 bg-gradient-to-tr from-zinc-950 via-zinc-900 to-zinc-800" />
@@ -62,7 +79,6 @@ function LoginContent() {
             <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
               <span className="text-zinc-950 font-bold tracking-widest text-sm">PB</span>
             </div>
-            <span className="text-white font-semibold text-lg tracking-tight">PrimeBid</span>
           </Link>
         </div>
 
@@ -82,7 +98,7 @@ function LoginContent() {
       </div>
 
       {/* Right: Login Form */}
-      <div className="flex items-center justify-center p-8 md:p-12 bg-[#fdfdfc] min-h-screen">
+      <div className="flex items-center justify-center px-6 pb-8 pt-28 md:min-h-screen md:p-12 bg-[#fdfdfc] min-h-screen">
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -94,10 +110,9 @@ function LoginContent() {
             <div className="w-8 h-8 bg-zinc-950 rounded-md flex items-center justify-center">
               <span className="text-white font-bold tracking-widest text-xs">PB</span>
             </div>
-            <span className="font-semibold text-lg tracking-tight">PrimeBid</span>
           </Link>
 
-          <div className="mb-10">
+          <div className="mb-10 md:mt-10">
             <h1 className="text-3xl font-medium tracking-tight text-zinc-950 mb-2">Welcome back</h1>
             <p className="text-zinc-500 text-sm">Enter your credentials to connect</p>
           </div>

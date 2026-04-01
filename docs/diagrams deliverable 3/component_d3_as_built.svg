@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1120" viewBox="0 0 1600 1120">
+  <defs>
+    <style>
+      .title { font: 700 24px Georgia, "Times New Roman", serif; fill: #222; }
+      .label { font: 600 17px Georgia, "Times New Roman", serif; fill: #222; }
+      .text { font: 500 13px Georgia, "Times New Roman", serif; fill: #222; }
+      .small { font: 500 12px Georgia, "Times New Roman", serif; fill: #333; }
+      .legend { font: 600 13px Georgia, "Times New Roman", serif; fill: #222; }
+      .arrow { stroke: #597d82; stroke-width: 2.3; fill: none; }
+      .dash { stroke: #597d82; stroke-width: 2.1; fill: none; stroke-dasharray: 8 8; }
+      .box { fill: #efefef; stroke: #787878; stroke-width: 1.6; }
+      .note { fill: #fff8cc; stroke: #8c8558; stroke-width: 1.3; }
+      .db { fill: #f7f7f7; stroke: #8d8d8d; stroke-width: 1.5; }
+    </style>
+    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#597d82"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="1120" fill="#ffffff"/>
+  <text x="800" y="44" text-anchor="middle" class="title">PrimeBid Deliverable 3 - As-Built Subsystem Diagram</text>
+
+  <!-- Actor -->
+  <circle cx="800" cy="82" r="11" fill="none" stroke="#8c8c8c" stroke-width="1.8"/>
+  <line x1="800" y1="93" x2="800" y2="132" stroke="#8c8c8c" stroke-width="1.8"/>
+  <line x1="780" y1="108" x2="820" y2="108" stroke="#8c8c8c" stroke-width="1.8"/>
+  <line x1="800" y1="132" x2="782" y2="156" stroke="#8c8c8c" stroke-width="1.8"/>
+  <line x1="800" y1="132" x2="818" y2="156" stroke="#8c8c8c" stroke-width="1.8"/>
+  <text x="800" y="180" text-anchor="middle" class="label">Client (Browser UI)</text>
+
+  <!-- Frontend -->
+  <rect x="655" y="220" width="255" height="110" class="box"/>
+  <text x="675" y="250" class="label">Frontend UI</text>
+  <text x="675" y="274" class="text">:3000</text>
+  <text x="675" y="296" class="text">Next.js + React pages</text>
+  <text x="675" y="318" class="text">Auth, Catalogue, Payment, AI</text>
+
+  <!-- Gateway -->
+  <rect x="630" y="415" width="295" height="116" class="box"/>
+  <text x="652" y="447" class="label">Gateway Service</text>
+  <text x="652" y="471" class="text">:8080</text>
+  <text x="652" y="493" class="text">Facade + Orchestration</text>
+  <text x="652" y="515" class="text">+ AI Auto-Bid endpoints</text>
+
+  <!-- Services -->
+  <rect x="90" y="650" width="180" height="96" class="box"/>
+  <text x="112" y="683" class="label">IAM Service</text>
+  <text x="112" y="708" class="text">:8081</text>
+  <text x="112" y="731" class="text">Auth + Profiles</text>
+
+  <rect x="405" y="650" width="190" height="96" class="box"/>
+  <text x="426" y="683" class="label">Catalogue Service</text>
+  <text x="426" y="708" class="text">:8082</text>
+  <text x="426" y="731" class="text">Items + Status</text>
+
+  <rect x="720" y="650" width="190" height="96" class="box"/>
+  <text x="741" y="683" class="label">Auction Service</text>
+  <text x="741" y="708" class="text">:8083</text>
+  <text x="741" y="731" class="text">Bids + Scheduler</text>
+
+  <rect x="1035" y="650" width="190" height="96" class="box"/>
+  <text x="1056" y="683" class="label">Payment Service</text>
+  <text x="1056" y="708" class="text">:8084</text>
+  <text x="1056" y="731" class="text">Payments + Receipts</text>
+
+  <rect x="1360" y="670" width="220" height="88" class="box"/>
+  <text x="1383" y="701" class="label">External Gemini API</text>
+  <text x="1383" y="726" class="text">AI recommendation</text>
+  <text x="1383" y="748" class="text">and chat completion</text>
+
+  <!-- Databases -->
+  <ellipse cx="180" cy="836" rx="55" ry="17" class="db"/>
+  <rect x="125" y="836" width="110" height="74" class="db"/>
+  <ellipse cx="180" cy="910" rx="55" ry="17" class="db"/>
+  <text x="141" y="871" class="text">IAM DB</text>
+  <text x="137" y="896" class="text">SQLite</text>
+
+  <ellipse cx="500" cy="836" rx="58" ry="17" class="db"/>
+  <rect x="442" y="836" width="116" height="74" class="db"/>
+  <ellipse cx="500" cy="910" rx="58" ry="17" class="db"/>
+  <text x="457" y="871" class="text">Catalogue DB</text>
+  <text x="462" y="896" class="text">SQLite</text>
+
+  <ellipse cx="815" cy="836" rx="55" ry="17" class="db"/>
+  <rect x="760" y="836" width="110" height="74" class="db"/>
+  <ellipse cx="815" cy="910" rx="55" ry="17" class="db"/>
+  <text x="770" y="871" class="text">Auction DB</text>
+  <text x="772" y="896" class="text">SQLite</text>
+
+  <ellipse cx="1130" cy="836" rx="55" ry="17" class="db"/>
+  <rect x="1075" y="836" width="110" height="74" class="db"/>
+  <ellipse cx="1130" cy="910" rx="55" ry="17" class="db"/>
+  <text x="1082" y="871" class="text">Payment DB</text>
+  <text x="1087" y="896" class="text">SQLite</text>
+
+  <!-- Vertical core flow -->
+  <line x1="800" y1="182" x2="800" y2="220" class="arrow" marker-end="url(#arrowhead)"/>
+  <text x="821" y="204" class="text">loads UI</text>
+
+  <line x1="782" y1="330" x2="782" y2="415" class="arrow" marker-end="url(#arrowhead)"/>
+  <text x="828" y="377" class="label">REST calls</text>
+  <text x="833" y="401" class="label">UC1-UC7 + AI</text>
+
+  <!-- Gateway to services -->
+  <path d="M630 470 C490 470, 330 510, 180 650" class="arrow" marker-end="url(#arrowhead)"/>
+  <text x="360" y="470" class="text">/auth/*, /users/*</text>
+
+  <path d="M630 500 C560 535, 520 575, 500 650" class="arrow" marker-end="url(#arrowhead)"/>
+  <text x="455" y="575" class="text">/items, /catalogue/*</text>
+
+  <line x1="782" y1="531" x2="815" y2="650" class="arrow" marker-end="url(#arrowhead)"/>
+  <text x="835" y="595" class="text">/auctions/*, /bids</text>
+  <text x="843" y="618" class="text">/auto-bid/status</text>
+
+  <path d="M925 500 C1010 535, 1095 575, 1130 650" class="arrow" marker-end="url(#arrowhead)"/>
+  <text x="1035" y="560" class="text">/payments/*</text>
+
+  <path d="M925 460 C1080 460, 1260 525, 1475 670" class="dash" marker-end="url(#arrowhead)"/>
+  <text x="1070" y="450" class="text">/auto-bid/chat</text>
+  <text x="1070" y="471" class="text">AI advice path</text>
+
+  <!-- Auction updates catalogue -->
+  <path d="M720 688 C655 700, 620 705, 560 708 C510 710, 465 705, 425 680" class="arrow" marker-end="url(#arrowhead)"/>
+  <text x="430" y="570" class="text">/items, /items/{id}</text>
+  <text x="405" y="594" class="text">PUT /items/{id}/status</text>
+  <text x="410" y="616" class="text">(on auction end observer)</text>
+
+  <!-- DB connections -->
+  <line x1="180" y1="746" x2="180" y2="819" class="arrow" marker-end="url(#arrowhead)"/>
+  <line x1="500" y1="746" x2="500" y2="819" class="arrow" marker-end="url(#arrowhead)"/>
+  <line x1="815" y1="746" x2="815" y2="819" class="arrow" marker-end="url(#arrowhead)"/>
+  <line x1="1130" y1="746" x2="1130" y2="819" class="arrow" marker-end="url(#arrowhead)"/>
+
+  <!-- Notes -->
+  <path d="M1140 220 h400 v52 l18 18 v118 h-418 z" class="note"/>
+  <line x1="1540" y1="272" x2="1558" y2="290" stroke="#8c8558" stroke-width="1.3"/>
+  <text x="1165" y="252" class="text">Session token state is maintained in-memory</text>
+  <text x="1165" y="274" class="small">by SessionStore in gateway, while frontend keeps</text>
+  <text x="1165" y="295" class="small">the active auth token in Zustand persistence</text>
+  <text x="1165" y="316" class="small">for browser-side session continuity.</text>
+  <line x1="1340" y1="352" x2="1340" y2="670" class="dash"/>
+
+  <path d="M1140 455 h320 v52 l18 18 v100 h-338 z" class="note"/>
+  <line x1="1460" y1="507" x2="1478" y2="525" stroke="#8c8558" stroke-width="1.3"/>
+  <text x="1163" y="488" class="text">New in Deliverable 3:</text>
+  <text x="1163" y="510" class="small">frontend item-detail AI panel calls</text>
+  <text x="1163" y="531" class="small">gateway /auto-bid/* APIs for chat,</text>
+  <text x="1163" y="552" class="small">start, stop, and status actions.</text>
+
+  <path d="M1225 860 h335 v52 l18 18 v98 h-353 z" class="note"/>
+  <line x1="1560" y1="912" x2="1578" y2="930" stroke="#8c8558" stroke-width="1.3"/>
+  <text x="1248" y="892" class="text">AI orchestration remains inside the gateway.</text>
+  <text x="1248" y="914" class="small">The frontend does not call Gemini directly;</text>
+  <text x="1248" y="935" class="small">it consumes safe, structured gateway responses</text>
+  <text x="1248" y="956" class="small">returned through controlled backend APIs.</text>
+
+  <!-- Legend -->
+  <rect x="1225" y="1030" width="335" height="72" rx="6" fill="#ffffff" stroke="#666" stroke-width="1.5"/>
+  <line x1="1225" y1="1058" x2="1560" y2="1058" stroke="#666" stroke-width="1.2"/>
+  <line x1="1320" y1="1030" x2="1320" y2="1102" stroke="#666" stroke-width="1.2"/>
+  <text x="1245" y="1049" class="legend">Symbol</text>
+  <text x="1340" y="1049" class="legend">Meaning</text>
+  <text x="1245" y="1075" class="small">component</text>
+  <text x="1340" y="1075" class="small">deployable service/module</text>
+  <text x="1245" y="1093" class="small">database</text>
+  <text x="1340" y="1093" class="small">service-owned datastore</text>
+</svg>

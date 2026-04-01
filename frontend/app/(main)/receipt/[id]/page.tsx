@@ -4,7 +4,7 @@ import React, { useState, useEffect, use } from 'react';
 import { motion } from 'framer-motion';
 import { fetchApi } from '@/lib/api';
 import Link from 'next/link';
-import { CheckCircle, DownloadSimple, CreditCard, Package, Truck } from '@phosphor-icons/react';
+import { CheckCircle, CreditCard, Package, Truck } from '@phosphor-icons/react';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -50,9 +50,6 @@ export default function ReceiptPage({ params }: PageProps) {
         transition={{ type: 'spring', stiffness: 100, damping: 20 }}
         className="w-full max-w-md bg-white border border-zinc-200 rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden"
       >
-        {/* Success strip */}
-        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-400 to-green-500" />
-
         <div className="flex flex-col items-center justify-center text-center mb-10">
           <motion.div
             initial={{ scale: 0 }}
@@ -123,9 +120,6 @@ export default function ReceiptPage({ params }: PageProps) {
         </div>
 
         <div className="flex flex-col gap-4">
-          <button className="w-full py-4 bg-zinc-50 text-zinc-950 rounded-xl font-medium border border-zinc-200 flex items-center justify-center gap-2 hover:bg-zinc-100 transition-colors">
-            <DownloadSimple weight="bold" /> Download PDF
-          </button>
           <Link href="/catalogue" className="text-center text-sm font-medium text-zinc-500 hover:text-zinc-950 transition-colors">
             Return to Catalogue
           </Link>

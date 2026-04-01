@@ -1,124 +1,322 @@
-# EECS 4413 - Project Report (Deliverable 3)
+# EECS 4413 Project Report - Deliverable 3
 
-**Group Number:** _________
-**Number of Members:** _____
+## 1. Assignment 3 Scope
 
----
+This deliverable completes the frontend/UI layer for PrimeBid, documents the Assignment 3 distinguishable feature, and consolidates testing and deployment evidence for the final system.
 
-## 1. Team Member Contributions
-*(Please fill in real names and detail exactly what parts of the frontend, backend, docker, or testing each member focused on).*
+For this submission pass, the focus is:
+- frontend coverage for UC1 to UC7
+- the distinguishable feature: PrimeBid AI chatbot and auto-bid assistant
+- frontend robustness and client-side validation
+- final design/report updates required by the A3 rubric
 
-- **[Member 1 Name]**: *e.g., Developed the Gateway and AI Chatbot backend endpoint, integrated Gemini REST calls.*
-- **[Member 2 Name]**: *e.g., Developed the Frontend React components for the AI Advisor, mapped HATEOAS links, set up Next.js.*
-- **[Member 3 Name]**: *e.g., Orchestrated Dockerfiles, docker-compose configuration, and created the Postman load/robustness testing suite.*
-- **[Member 4 Name]**: *e.g., Managed the Auction lifecycle observer patterns, scheduler logic, and wrote backend unit tests.*
+Backend functionality, backend automated tests, and backend service behavior were treated as already completed and were not changed as part of this update.
 
----
+## 2. Team Member Contributions
 
-## 2. Distinguishable Feature: LLM-Based Autonomic Chatbot
+Replace this section with your real team information before submission.
 
-PrimeBid incorporates **PrimeBid AI**, an advanced LLM-based conversational agent built on Google's Gemini 2.0 architecture. This serves as a self-adaptive bidding companion that processes natural language (NL) to help users navigate complex forwarding auction dynamics.
+| Member | Contribution summary |
+| --- | --- |
+| Member 1 | Frontend route implementation, auth pages, catalogue/detail UI |
+| Member 2 | AI assistant UI, chatbot interaction flow, auto-bid frontend integration |
+| Member 3 | Docker packaging, Compose setup, deployment validation, README/testing docs |
+| Member 4 | Backend services, API design, robustness testing, payment/receipt integration |
 
-### Architecture & Capabilities
-Instead of forcing users to construct their own rigid bidding algorithms, PrimeBid AI acts as an interpreter between NL intent and the deterministic strategy execution engine:
-- **Context Injection**: The backend pulls live auction state (current bid, remaining time, active competition) and injects it into a curated system prompt before sending it to the LLM.
-- **Intent Parsing**: The chatbot evaluates the user's intent ("bid for me", "what's the best strategy?", "stop my bids") and outputs structured JSON containing a conversational `reply` and deterministic `action` triggers.
-- **Autonomic Execution**: If authorized by the user, the AI triggers the deployment of one of three underlying micro-strategies (`CONSERVATIVE`, `AGGRESSIVE`, `SNIPER`), decoupling decision-making from execution.
+## 3. Distinguishable Feature: PrimeBid AI
 
-### Validation Report: Accuracy & Prompt Engineering
-To ensure the AI advisor does not hallucinate critical financial data, a validation phase was executed against a test dataset of 200 user prompts across 50 simulated auction scenarios.
+### 3.1 Feature Summary
 
-**Validation Metrics:**
-- **Intent Classification** (Start, Stop, Query): **99.5%**
-- **Financial Constraint Adherence** (Never exceed budget): **100.0%**
-- **Strategy Recommendation Alignment** (Contextual fit): **94.0%**
+PrimeBid AI is the Assignment 3 distinguishable feature. It extends the item-detail page with a buyer-facing conversational assistant that:
 
-**Final Optimized System Prompt Snippet (for highest accuracy):**
-```text
-You are PrimeBid AI, an expert auction bidding assistant. 
-You are friendly, concise, and data-driven. Keep responses under 3 sentences.
+- explains auction state in natural language
+- recommends bidding strategies
+- converts a user's request into a structured auto-bid action
+- starts, monitors, and stops an auto-bid session from the UI
 
-CURRENT AUCTION STATE:
-- Current Highest Bid: ${currentHighestBid}
-- Time Remaining: ${remainingSeconds} seconds
+From the frontend perspective, the AI capability is surfaced through the `AiBidAssistant` component on the item-detail page. The assistant is available only to authenticated users and is embedded directly into the live bidding experience instead of being separated into a back-office screen.
 
-RULES:
-- If the user asks you to bid, include an "action" field.
-- If recommending a strategy, include "suggestedStrategy" and "suggestedMaxBid".
+### 3.2 User-Facing Workflow
 
-RESPOND IN THIS EXACT JSON FORMAT (no markdown, pure JSON):
-{
-  "reply": "<conversational response>",
-  "action": "START_AUTOBID" | "STOP_AUTOBID" | null,
-  "suggestedStrategy": "CONSERVATIVE" | "AGGRESSIVE" | "SNIPER" | null,
-  "suggestedMaxBid": <number>
-}
-```
+The user workflow for PrimeBid AI is:
 
----
+1. Open an active item detail page.
+2. Expand the `PrimeBid AI` panel.
+3. Enter a budget or ask a natural-language question about strategy or bidding.
+4. Review the assistant's response and any suggested action.
+5. Confirm activation of auto-bidding if the assistant returns a recommendation.
+6. Monitor live status and optionally stop the session.
 
-## 3. Performance Report
+### 3.3 Technical Design Summary
 
-To validate system resilience under load, **JMeter** was utilized to simulate high arrival rates of concurrent users placing bids and querying the Gateway API. The test plan utilized randomized CSV data sets to prevent caching.
+The distinguishable feature spans both frontend and gateway integration:
 
-### JMeter Test Plan Configuration
-- **Thread Group (Users)**: Ramped up from 10 to 5,000 threads over 60 seconds.
-- **Action Mix**: 60% Read (Live updates), 30% Write (Bids), 10% Complex (AI Queries).
+- Frontend component: `frontend/app/components/AiBidAssistant.tsx`
+- Item page integration: `frontend/app/(main)/catalogue/[id]/page.tsx`
+- Gateway endpoints:
+  - `POST /auto-bid/chat`
+  - `POST /auto-bid/start`
+  - `GET /auto-bid/status/{sessionId}`
+  - `POST /auto-bid/stop/{sessionId}`
+- Backend advisor and prompt orchestration:
+  - `gateway/src/main/java/com/forwardauction/gateway/AutoBidController.java`
+  - `gateway/src/main/java/com/forwardauction/gateway/autobid/GenAiAdvisor.java`
 
-### Response Time as a Function of Arrival Rate
-| Arrival Rate ($\lambda$) (req/sec) | Avg Response Time ($T_r$) | Error Rate | System State |
-| :--- | :--- | :--- | :--- |
-| **50** | 45 ms | 0.00% | Under-utilized |
-| **200** | 110 ms | 0.00% | Nominal |
-| **500** | 340 ms | 0.02% | Near Saturation |
-| **1,000** | 1,250 ms | 4.50% | Congested (ThreadPool Queuing) |
-| **2,500** | >5,000 ms | 18.00% | Overloaded (DB Lock Contention) |
+The current prompt design injects live auction context before each AI call, including current price, starting price, time remaining, highest bidder, number of bids, and whether the user already has an active auto-bid session. That context is used to keep the assistant grounded in the current auction state instead of responding only from generic LLM behavior.
 
-*Note: The performance curve follows standard queuing theory behavior ($M/M/c$). Response times remain strictly linear until $\lambda \approx 500 \text{ req/sec}$, at which point database lock contention on the SQLite `auctions` table causes exponential degradation.*
+### 3.4 Validation Approach
 
----
+Because LLM output is non-deterministic, validation for PrimeBid AI should be based on behavior classes rather than exact sentence matching. The test suite therefore verifies:
 
-## 4. Testing Reliability Report
+- the assistant opens and closes correctly in the UI
+- authenticated users can submit prompts
+- strategy suggestions are rendered safely
+- the assistant can produce an actionable auto-bid recommendation
+- active auto-bid status is displayed and refreshed
+- stopping a session updates the UI state cleanly
+- seller misuse, low budgets, duplicate sessions, and ended-auction states are handled without crashing the page
 
-To estimate the residual defects in the PrimeBid codebase and determine the CPU testing hours required for a production-ready release, we utilized the **Jelinski-Moranda (JM) Software Reliability Model**.
+If your team already ran a prompt-evaluation spreadsheet or sample prompt set, insert the measured AI quality summary here before final submission. Do not invent accuracy numbers. A simple acceptable table is:
 
-### Failure Rate Estimation Model
-Let $v_0$ be the initial number of latent bugs in the system prior to testing. 
-- **Assumption:** $v_0 = 500$ bugs.
-- **Proportionality Constant ($\Phi$):** Based on historical Java microservice data, testing uncovers bugs at a rate of $\Phi = 0.003 \text{ per CPU hour}$.
+| Validation dimension | Example metric to report | Your measured result |
+| --- | --- | --- |
+| Intent detection | Start / stop / analyze classification accuracy | `TBD - replace with measured value` |
+| Strategy recommendation quality | Correct strategy class for scenario set | `TBD - replace with measured value` |
+| Budget adherence | Sessions never exceed requested max bid | `TBD - replace with measured value` |
+| Failure handling | Graceful fallback/error rendering rate | `TBD - replace with measured value` |
 
-The failure rate $\lambda(\tau)$ at testing time $\tau$ is defined as:
-$$\lambda(\tau) = \Phi [v_0 - \mu(\tau)]$$
+## 4. Frontend Implementation Coverage
 
-Where $\mu(\tau)$ is the cumulative number of bugs found by time $\tau$:
-$$\mu(\tau) = v_0 (1 - e^{-\Phi \tau})$$
+The current frontend covers all major user journeys required by UC1 to UC7.
 
-### CPU Testing Time Needed to Eliminate All Bugs
-To find the CPU testing time $\tau$ necessary to uncover and resolve $\approx 499$ of the $500$ bugs (as finding the absolute last fractional bug trends toward infinity):
+| Use case | Frontend route(s) | Coverage summary |
+| --- | --- | --- |
+| UC1 Registration and Login | `/signup`, `/login`, `/dashboard/settings` | Signup, login, logout, and password reset UI |
+| UC2 Browse/Search Catalogue | `/`, `/catalogue`, `/catalogue/[id]` | Landing page, catalogue browsing, search, item detail |
+| UC3 Place Bid | `/catalogue/[id]` | Bid placement, bid validation, bid history, success/error states |
+| UC4 View Auction Result | `/catalogue/[id]` | Winner, non-winner, unsold, and logged-out ended states |
+| UC5 Payment | `/payment/[id]` | Checkout, shipping selection, card form, expiry validation |
+| UC6 Receipt | `/receipt/[id]` | Payment confirmation, totals, card summary, return path |
+| UC7 Create Item and Auction | `/dashboard/sell` | Seller item creation with auction metadata |
 
-$$499 = 500 (1 - e^{-0.003 \tau})$$
-$$0.998 = 1 - e^{-0.003 \tau}$$
-$$e^{-0.003 \tau} = 0.002$$
-$$-0.003 \tau = \ln(0.002)$$
-$$-0.003 \tau \approx -6.2146$$
-$$\tau \approx 2,071.5 \text{ CPU Hours}$$
+Additional frontend pages and shared UI areas covered in this deliverable:
 
-**Conclusion**: To eliminate the assumed 500 bugs and achieve a near-zero failure rate, **$\approx 2,071$ CPU hours** of automated testing are required.
+- home page
+- navbar and mobile menu
+- responsive auth-page menu container
+- security settings page
+- PrimeBid AI assistant on the item detail page
 
----
+## 5. Frontend and AI Testing Report
 
-## 5. Robustness & Security Validation
+### 5.1 Test Artifact
 
-To fulfill the robustness rubric requirements (handling incorrect user inputs, scalability, and security):
-*   **Security (Authorization):** A comprehensive Postman suite (`PrimeBid_Tests.postman_collection.json`) was engineered to verify that unauthenticated requests to protected endpoints, such as starting an Autobid session (`POST /auto-bid/start`), are accurately rejected with proper `4xx` HTTP status codes.
-*   **Robustness (Data Validation):** The API scripts deliberately push negative values and malformed JSON payloads (e.g., negative auto-bidding budgets) to ensure the business layer throws handled exceptions rather than crashing. 
-*   **Client-Side Validation:** The frontend UI implements restrictive form typing, preventing negative numbers in bidding boxes, and enforces required fields before dispatching authentication requests.
-*   **Scalability:** A Bash testing script (`test_cases.sh`) fires 20 simultaneous, asynchronous background requests retrieving catalogue matrices to guarantee thread-pool stability under high concurrency.
+The complete frontend and AI chatbot manual test suite is documented in:
 
----
+- `docs/frontend-testing/A3_FRONTEND_AI_TEST_CASES.md`
 
-## 6. Architectural & UML Diagrams
-*(Please insert screenshots of your updated UML and Deployment diagrams here. Ensure fonts are readable and lines are clear).*
+That document is the main traceability artifact for Assignment 3 frontend verification. It maps the UI to:
 
-- **Deployment Diagram**: [Insert docker-compose topology diagram]
-- **Component Diagram**: [Insert Gateway -> Microservices diagram]
+- UC1 to UC7
+- shared navigation and mobile layout behavior
+- client-side validation
+- the PrimeBid AI distinguishable feature
+
+### 5.2 Coverage Summary
+
+The documented suite includes the following areas:
+
+- home page and shared navigation
+- signup, login, logout, and password reset
+- seller item creation flow
+- catalogue browse, search, item-detail navigation, and selection
+- bidding and bid-history states
+- ended-auction result states
+- payment and receipt pages
+- PrimeBid AI open/close, analysis, recommendation, start, stop, polling, and error handling
+- responsive/mobile verification for the most visible user journeys
+
+### 5.3 Why This Satisfies the A3 Frontend Testing Requirement
+
+The rubric asks for evidence that the UI works, supports navigation, and includes robustness validations. This test suite addresses that by checking:
+
+- happy paths for all main use cases
+- negative paths and client-side validation
+- authenticated vs unauthenticated behavior
+- usability of the AI-assisted flow
+- payment validation on the client side
+- mobile layout survivability for the most important screens
+
+## 6. Testing Reliability Report
+
+The rubric explicitly asks for a software reliability estimate using the assumption `v0 = 500`. The Jelinski-Moranda-style reasoning below can be included directly in the final report.
+
+### 6.1 Assumptions
+
+- Initial latent defects: `v0 = 500`
+- Defect discovery proportionality constant: `Phi = 0.003` per CPU testing hour
+
+### 6.2 Failure Rate Model
+
+Let `mu(t)` be the cumulative number of discovered defects after `t` CPU testing hours.
+
+`mu(t) = v0 * (1 - e^(-Phi * t))`
+
+The instantaneous failure rate is:
+
+`lambda(t) = Phi * (v0 - mu(t))`
+
+### 6.3 CPU Testing Time to Remove Nearly All Defects
+
+To estimate the testing effort needed to eliminate approximately `499` of the `500` defects:
+
+`499 = 500 * (1 - e^(-0.003 * t))`
+
+`0.998 = 1 - e^(-0.003 * t)`
+
+`e^(-0.003 * t) = 0.002`
+
+`-0.003 * t = ln(0.002)`
+
+`t = -ln(0.002) / 0.003`
+
+`t ~= 2071.5 CPU hours`
+
+### 6.4 Reliability Conclusion
+
+Under the stated assumptions, approximately `2071.5 CPU hours` of testing would be required to reduce the original latent defect count from `500` to roughly `1` remaining defect. This value should be interpreted as a planning estimate, not as a measured result for the current repository.
+
+## 7. Robustness and Security Validation
+
+Frontend robustness and security-relevant behavior are addressed in the UI through the following areas:
+
+- required auth forms and disabled submits for incomplete inputs
+- password reset validation and error reporting
+- seller form validation for item and auction creation
+- bid input validation and clear negative feedback
+- payment expiry-date validation preventing past dates
+- unauthorized action handling for protected operations
+- AI assistant error handling when a request fails or when the auction state makes the action invalid
+
+The backend test suite and API-level robustness scripts remain the source of truth for service-level security, scalability, and malformed-request validation. This report section focuses only on how those conditions surface in the frontend.
+
+## 8. Performance Report
+
+The rubric also asks for a performance report using JMeter. Because this repository does not contain measured JMeter output files, this report should not fabricate response-time numbers.
+
+If your team already ran JMeter against the gateway/backend, paste the measured values into the table below before submission:
+
+| Arrival rate (req/sec) | Average response time | Error rate | Observed notes |
+| --- | --- | --- | --- |
+| `TBD` | `TBD` | `TBD` | `TBD` |
+| `TBD` | `TBD` | `TBD` | `TBD` |
+| `TBD` | `TBD` | `TBD` | `TBD` |
+
+Suggested write-up:
+
+- identify the endpoints included in the load mix
+- describe ramp-up strategy and concurrency
+- explain where latency started to rise sharply
+- note whether contention, timeouts, or queueing appeared
+
+This keeps the report truthful while still aligning with the rubric.
+
+## 9. Diagram Updates Included for Assignment 3
+
+The updated Deliverable 3 diagram set is stored in:
+
+- `docs/diagrams deliverable 3/component_d3_as_built.png`
+- `docs/diagrams deliverable 3/deployment_a3_containers.png`
+- `docs/diagrams deliverable 3/use_case_a3_primebid_ai.png`
+- `docs/diagrams deliverable 3/sequence_uc8_ai_autobid_a3.png`
+
+These diagrams now extend the Deliverable 2 views so the Assignment 3 frontend and AI work are represented explicitly.
+
+### 9.1 Use Case Diagram
+
+The Deliverable 3 use case diagram adds the buyer-facing AI use case:
+
+- `UC8 - PrimeBid AI Advisor / Auto-Bid Assistant`
+
+That view connects the buyer actor to:
+
+- ask AI for bidding analysis
+- receive a strategy recommendation
+- start auto-bidding
+- stop auto-bidding
+
+### 9.2 Sequence Diagram
+
+The Deliverable 3 sequence diagram covers:
+
+- frontend item detail page
+- `AiBidAssistant`
+- gateway `AutoBidController`
+- `GenAiAdvisor`
+- session store and auto-bid store
+- external Gemini API
+- auction service status lookup
+
+The sequence shows:
+
+1. user prompt submission
+2. AI response returned to frontend
+3. user confirmation to start auto-bid
+4. session creation
+5. status polling
+6. stop action
+
+### 9.3 Component / Deployment Diagram
+
+The Deliverable 3 component and deployment diagrams show:
+
+- Next.js frontend container
+- gateway container
+- IAM, catalogue, auction, and payment containers
+- PrimeBid AI UI component in the frontend
+- gateway AI orchestration classes
+- Gemini integration boundary
+- Docker Compose as the local deployment topology
+
+### 9.4 Activity / Payment Flow Diagrams
+
+The existing activity and payment-related diagrams should be checked against the final submitted frontend so they reflect:
+
+- auth page navigation as implemented now
+- payment expiry-date validation before submission
+- receipt page after successful payment
+
+## 10. Submission Notes
+
+Before final submission, replace the remaining placeholders with real values:
+
+- actual team member names and exact contributions
+- actual JMeter results from your backend performance run
+- actual AI validation numbers if your team measured them
+- updated UML/deployment screenshots with readable fonts
+
+## 11. References to Project Artifacts
+
+- Frontend test suite: `docs/frontend-testing/A3_FRONTEND_AI_TEST_CASES.md`
+- Updated Deliverable 3 diagrams:
+  - `docs/diagrams deliverable 3/component_d3_as_built.png`
+  - `docs/diagrams deliverable 3/deployment_a3_containers.png`
+  - `docs/diagrams deliverable 3/use_case_a3_primebid_ai.png`
+  - `docs/diagrams deliverable 3/sequence_uc8_ai_autobid_a3.png`
+- Existing use-case API walkthroughs:
+  - `INDIVIDUAL_USE_CASE_TESTING.md`
+  - `TESTING_INSTRUCTIONS.md`
+- Existing D2 diagram assets:
+  - `docs/diagrams/sequence_uc1_auth_d2.png`
+  - `docs/diagrams/sequence_uc2_browse_select_d2.png`
+  - `docs/diagrams/sequence_uc3_bid_d2.png`
+  - `docs/diagrams/sequence_uc5_uc6_payment_receipt_d2.png`
+  - `docs/diagrams/component_d2_as_built.png`
+
+## 12. Final Summary
+
+For Assignment 3, the frontend now has a complete documented testing plan that covers the full user-facing system plus the new PrimeBid AI capability. The remaining manual work before submission is not code work; it is report completion work:
+
+- fill in real team/member details
+- paste measured load-test and AI-validation results
+- update diagrams so they explicitly show the AI assistant and current containerized architecture

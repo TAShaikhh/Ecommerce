@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1240" viewBox="0 0 1900 1240">
+  
+<defs>
+  <style>
+    .title { font: 700 28px Arial, Helvetica, sans-serif; fill: #111827; }
+    .subtitle { font: 600 18px Arial, Helvetica, sans-serif; fill: #334155; }
+    .label { font: 600 16px Arial, Helvetica, sans-serif; fill: #111827; }
+    .small { font: 500 13px Arial, Helvetica, sans-serif; fill: #475569; }
+    .tiny { font: 500 11px Arial, Helvetica, sans-serif; fill: #64748b; }
+  </style>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0,0 L12,6 L0,12 Z" fill="#334155"/>
+  </marker>
+</defs>
+
+  <rect width="1900" height="1240" fill="#f8fafc"/>
+  <text x="60" y="60" class="title">UC8 Sequence: PrimeBid AI Chat and Auto-Bid Session</text>
+  <text x="60" y="92" class="small">Updated Assignment 3 sequence showing the AI recommendation and auto-bid orchestration path</text>
+
+  <g>
+    <rect x="90" y="130" width="200" height="56" rx="14" fill="#ffffff" stroke="#94a3b8" stroke-width="3"/>
+    <text x="154" y="164" class="label">Buyer</text>
+    <rect x="330" y="130" width="250" height="56" rx="14" fill="#eff6ff" stroke="#93c5fd" stroke-width="3"/>
+    <text x="350" y="164" class="label">Item Detail + AI Assistant</text>
+    <rect x="650" y="130" width="220" height="56" rx="14" fill="#eef2ff" stroke="#a5b4fc" stroke-width="3"/>
+    <text x="722" y="164" class="label">Gateway</text>
+    <rect x="950" y="130" width="240" height="56" rx="14" fill="#ecfeff" stroke="#67e8f9" stroke-width="3"/>
+    <text x="985" y="164" class="label">AutoBidController</text>
+    <rect x="1270" y="130" width="220" height="56" rx="14" fill="#ede9fe" stroke="#c4b5fd" stroke-width="3"/>
+    <text x="1316" y="164" class="label">GenAiAdvisor</text>
+    <rect x="1560" y="130" width="220" height="56" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="3"/>
+    <text x="1613" y="164" class="label">Auction API</text>
+  </g>
+
+  <line x1="190" y1="186" x2="190" y2="1140" stroke="#94a3b8" stroke-width="3" stroke-dasharray="10 8"/>
+  <line x1="455" y1="186" x2="455" y2="1140" stroke="#94a3b8" stroke-width="3" stroke-dasharray="10 8"/>
+  <line x1="760" y1="186" x2="760" y2="1140" stroke="#94a3b8" stroke-width="3" stroke-dasharray="10 8"/>
+  <line x1="1070" y1="186" x2="1070" y2="1140" stroke="#94a3b8" stroke-width="3" stroke-dasharray="10 8"/>
+  <line x1="1380" y1="186" x2="1380" y2="1140" stroke="#94a3b8" stroke-width="3" stroke-dasharray="10 8"/>
+  <line x1="1670" y1="186" x2="1670" y2="1140" stroke="#94a3b8" stroke-width="3" stroke-dasharray="10 8"/>
+
+  <rect x="375" y="225" width="160" height="820" rx="18" fill="#ffffff" opacity="0.55"/>
+  <rect x="985" y="255" width="170" height="670" rx="18" fill="#ffffff" opacity="0.55"/>
+  <rect x="1315" y="320" width="130" height="200" rx="18" fill="#ffffff" opacity="0.55"/>
+
+  <line x1="190" y1="240" x2="455" y2="240" stroke="#334155" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="230" y="230" class="small">1. Open AI panel and enter budget / prompt</text>
+
+  <line x1="455" y1="300" x2="760" y2="300" stroke="#334155" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="530" y="290" class="small">2. POST /auto-bid/chat</text>
+
+  <line x1="760" y1="360" x2="1070" y2="360" stroke="#334155" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="810" y="350" class="small">3. Validate session and build context</text>
+
+  <line x1="1070" y1="420" x2="1670" y2="420" stroke="#334155" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="1140" y="410" class="small">4. Fetch auction state for item</text>
+
+  <line x1="1070" y1="480" x2="1380" y2="480" stroke="#7c3aed" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="1135" y="470" class="small">5. Send prompt + live context</text>
+
+  <line x1="1380" y1="540" x2="1070" y2="540" stroke="#7c3aed" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="1140" y="530" class="small">6. Structured reply with action and strategy</text>
+
+  <line x1="1070" y1="600" x2="760" y2="600" stroke="#334155" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="812" y="590" class="small">7. Return AI chat response</text>
+
+  <line x1="760" y1="660" x2="455" y2="660" stroke="#334155" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="520" y="650" class="small">8. UI renders recommendation and Activate button</text>
+
+  <line x1="190" y1="730" x2="455" y2="730" stroke="#0f766e" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="230" y="720" class="small">9. User confirms activation</text>
+
+  <line x1="455" y1="790" x2="760" y2="790" stroke="#0f766e" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="535" y="780" class="small">10. POST /auto-bid/start</text>
+
+  <line x1="760" y1="850" x2="1070" y2="850" stroke="#0f766e" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="820" y="840" class="small">11. Validate seller/budget/auction status</text>
+
+  <line x1="1070" y1="910" x2="760" y2="910" stroke="#0f766e" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="812" y="900" class="small">12. Create auto-bid session and return sessionId</text>
+
+  <line x1="760" y1="970" x2="455" y2="970" stroke="#0f766e" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="505" y="960" class="small">13. UI shows active status and begins polling</text>
+
+  <line x1="455" y1="1030" x2="760" y2="1030" stroke="#334155" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="760" y1="1070" x2="1070" y2="1070" stroke="#334155" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="500" y="1020" class="small">14. Repeated GET /auto-bid/status/{sessionId}</text>
+
+  <line x1="190" y1="1120" x2="455" y2="1120" stroke="#dc2626" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="225" y="1110" class="small">15. Optional user stop or session end</text>
+
+  <rect x="90" y="1160" width="1710" height="50" rx="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="120" y="1191" class="small">Outcome: the frontend receives an AI recommendation, turns it into an explicit user-confirmed action, displays live auto-bid session state, and remains in control of stop/error handling throughout the auction lifecycle.</text>
+</svg>

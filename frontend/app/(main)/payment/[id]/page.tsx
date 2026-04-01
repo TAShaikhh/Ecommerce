@@ -4,10 +4,36 @@ import React, { useState, useEffect, use } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { fetchApi } from '@/lib/api';
-import { CreditCard, ShieldCheck, Lightning, Receipt, MapPin, WarningCircle } from '@phosphor-icons/react';
+import { CreditCard, Lightning, Receipt, MapPin, WarningCircle } from '@phosphor-icons/react';
 
 interface PageProps {
   params: Promise<{ id: string }>;
+}
+
+function normalizeExpiryInput(value: string) {
+  const digits = value.replace(/\D/g, '').slice(0, 4);
+  if (digits.length <= 2) return digits;
+  return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+}
+
+function isExpiryDateValid(expiryDate: string) {
+  const match = expiryDate.match(/^(\d{2})\/(\d{2})$/);
+  if (!match) {
+    return false;
+  }
+
+  const month = Number(match[1]);
+  const year = Number(`20${match[2]}`);
+
+  if (month < 1 || month > 12) {
+    return false;
+  }
+
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const currentYear = now.getFullYear();
+
+  return year > currentYear || (year === currentYear && month >= currentMonth);
 }
 
 export default function PaymentPage({ params }: PageProps) {
@@ -36,8 +62,14 @@ export default function PaymentPage({ params }: PageProps) {
 
   const handlePay = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
+
+    if (!isExpiryDateValid(formData.expiryDate)) {
+      setError('Enter a valid expiry date in MM/YY format that is not in the past.');
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const res = await fetchApi('/pay', {
@@ -74,15 +106,12 @@ export default function PaymentPage({ params }: PageProps) {
         transition={{ type: 'spring', stiffness: 100, damping: 20 }}
         className="w-full max-w-lg bg-white border border-zinc-200 rounded-[2.5rem] p-10 shadow-2xl shadow-zinc-950/5 relative overflow-hidden"
       >
-        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-400 to-teal-500" />
-        
         <div className="flex items-center gap-4 mb-10">
           <div className="w-12 h-12 bg-zinc-50 rounded-full flex items-center justify-center text-zinc-950 border border-zinc-100">
             <CreditCard weight="fill" className="w-6 h-6" />
           </div>
           <div>
             <h1 className="text-2xl font-medium tracking-tight text-zinc-950">Secure Checkout</h1>
-            <p className="text-sm font-medium text-zinc-500 flex items-center gap-1"><ShieldCheck className="w-4 h-4 text-emerald-500" /> End-to-end encrypted</p>
           </div>
         </div>
 
@@ -155,10 +184,11 @@ export default function PaymentPage({ params }: PageProps) {
               <input
                 type="text"
                 value={formData.expiryDate}
-                onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, expiryDate: normalizeExpiryInput(e.target.value) })}
                 className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-zinc-950/10 transition-all"
                 placeholder="12/28"
                 maxLength={5}
+                pattern="^(0[1-9]|1[0-2])\/\d{2}$"
                 required
               />
             </div>

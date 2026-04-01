@@ -10,7 +10,7 @@ import { ArrowRight, WarningCircle } from '@phosphor-icons/react';
 
 export default function Signup() {
   const router = useRouter();
-  const { token } = useAuthStore();
+  const { token, hydrated } = useAuthStore();
   
   const [formData, setFormData] = useState({
     username: '',
@@ -24,10 +24,10 @@ export default function Signup() {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (token) {
+    if (hydrated && token) {
       router.replace('/catalogue');
     }
-  }, [token, router]);
+  }, [hydrated, token, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -52,21 +52,43 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2">
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 relative">
+      <div className="absolute inset-x-4 top-4 z-20 flex justify-center md:inset-x-auto md:right-6 md:left-auto md:justify-end">
+        <div className="flex w-full max-w-sm items-center justify-center gap-2 rounded-full border border-zinc-200 bg-white/95 px-3 py-2 shadow-sm backdrop-blur md:w-auto md:max-w-none">
+          <Link
+            href="/login"
+            className="rounded-full px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-950"
+          >
+            Sign in
+          </Link>
+          <Link
+            href="/signup"
+            className="rounded-full px-4 py-2 text-sm font-medium text-zinc-950 bg-zinc-100"
+          >
+            Create account
+          </Link>
+        </div>
+      </div>
+
       {/* Left: Form */}
-      <div className="flex items-center justify-center p-8 md:p-12 bg-[#fdfdfc] min-h-screen order-2 md:order-1">
+      <div className="flex items-center justify-center px-6 pb-8 pt-28 md:min-h-screen md:p-12 bg-[#fdfdfc] min-h-screen order-2 md:order-1">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="w-full max-w-md"
         >
+          <Link href="/" className="hidden md:inline-flex items-center gap-2 mb-12">
+            <div className="w-10 h-10 bg-zinc-950 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold tracking-widest text-sm">PB</span>
+            </div>
+          </Link>
+
           {/* Mobile logo */}
           <Link href="/" className="md:hidden inline-flex items-center gap-2 mb-12">
             <div className="w-8 h-8 bg-zinc-950 rounded-md flex items-center justify-center">
               <span className="text-white font-bold tracking-widest text-xs">PB</span>
             </div>
-            <span className="font-semibold text-lg tracking-tight">PrimeBid</span>
           </Link>
 
           <div className="mb-10">
@@ -75,7 +97,7 @@ export default function Signup() {
           </div>
 
           <form onSubmit={handleSignup} className="space-y-5">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="flex flex-col gap-2">
                 <label className="text-xs font-semibold uppercase tracking-widest text-zinc-500">First Name</label>
                 <input
@@ -185,14 +207,7 @@ export default function Signup() {
         <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-zinc-600 rounded-full blur-[120px] opacity-15" />
         <div className="absolute top-1/4 left-0 w-[300px] h-[300px] bg-zinc-700 rounded-full blur-[80px] opacity-10" />
         
-        <div className="relative z-10">
-          <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-              <span className="text-zinc-950 font-bold tracking-widest text-sm">PB</span>
-            </div>
-            <span className="text-white font-semibold text-lg tracking-tight">PrimeBid</span>
-          </Link>
-        </div>
+        <div className="relative z-10" />
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

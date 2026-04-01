@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   iam:
     build: ./iam
-    image: pawanjot52/primebid-iam:latest
+    image: tashaikhh/primebid-iam:latest
     container_name: primebid-iam
     ports:
       - "8081:8081"
@@ -14,7 +12,7 @@ services:
 
   catalogue:
     build: ./catalogue
-    image: pawanjot52/primebid-catalogue:latest
+    image: tashaikhh/primebid-catalogue:latest
     container_name: primebid-catalogue
     ports:
       - "8082:8082"
@@ -28,7 +26,7 @@ services:
 
   auction:
     build: ./auction
-    image: pawanjot52/primebid-auction:latest
+    image: tashaikhh/primebid-auction:latest
     container_name: primebid-auction
     ports:
       - "8083:8083"
@@ -43,7 +41,7 @@ services:
 
   payment:
     build: ./payment
-    image: pawanjot52/primebid-payment:latest
+    image: tashaikhh/primebid-payment:latest
     container_name: primebid-payment
     ports:
       - "8084:8084"
@@ -58,7 +56,7 @@ services:
 
   gateway:
     build: ./gateway
-    image: pawanjot52/primebid-gateway:latest
+    image: tashaikhh/primebid-gateway:latest
     container_name: primebid-gateway
     ports:
       - "8080:8080"
@@ -76,7 +74,7 @@ services:
 
   frontend:
     build: ./frontend
-    image: pawanjot52/primebid-frontend:latest
+    image: tashaikhh/primebid-frontend:latest
     container_name: primebid-frontend
     ports:
       - "3000:3000"
