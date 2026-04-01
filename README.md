@@ -41,6 +41,22 @@ export JAVA_HOME=$(/usr/libexec/java_home)
 
 For EECS 4413 Deliverable 3, the entire system (Frontend + 5 Backend Microservices) is containerized. 
 
+### Create a Local `.env` File
+
+Before launching the project, create a root-level `.env` file.
+
+Example:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
+GEMINI_API_KEY=
+```
+
+Notes:
+- `NEXT_PUBLIC_API_BASE_URL` should point to the gateway at `http://localhost:8080`
+- leave `GEMINI_API_KEY` blank if you do not yet have a key
+- do not commit your real `.env` file to the repository
+
 1. Ensure **Docker Desktop** is running.
 2. Build and start all services via Docker Compose:
 
