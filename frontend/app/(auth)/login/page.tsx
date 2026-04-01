@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -8,7 +8,7 @@ import { fetchApi } from '@/lib/api';
 import { useAuthStore } from '@/store/authStore';
 import { ArrowRight, WarningCircle, CheckCircle } from '@phosphor-icons/react';
 
-export default function Login() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { token, setAuth } = useAuthStore();
@@ -179,5 +179,13 @@ export default function Login() {
         </motion.div>
       </div>
     </div>
+  );
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#fdfdfc]" />}>
+      <LoginContent />
+    </Suspense>
   );
 }

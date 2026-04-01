@@ -3,19 +3,23 @@ version: '3.8'
 services:
   iam:
     build: ./iam
-    image: <your-docker-username>/primebid-iam:latest
+    image: pawanjot52/primebid-iam:latest
     container_name: primebid-iam
     ports:
       - "8081:8081"
+    volumes:
+      - ./iam/data:/app/data
     environment:
       - SERVICES_GATEWAYBASEURL=http://gateway:8080
 
   catalogue:
     build: ./catalogue
-    image: <your-docker-username>/primebid-catalogue:latest
+    image: pawanjot52/primebid-catalogue:latest
     container_name: primebid-catalogue
     ports:
       - "8082:8082"
+    volumes:
+      - ./catalogue/data:/app/data
     environment:
       - SERVICES_IAMBASEURL=http://iam:8081
       - SERVICES_AUCTIONBASEURL=http://auction:8083
@@ -24,10 +28,12 @@ services:
 
   auction:
     build: ./auction
-    image: <your-docker-username>/primebid-auction:latest
+    image: pawanjot52/primebid-auction:latest
     container_name: primebid-auction
     ports:
       - "8083:8083"
+    volumes:
+      - ./auction/data:/app/data
     environment:
       - SERVICES_IAMBASEURL=http://iam:8081
       - SERVICES_CATALOGUEBASEURL=http://catalogue:8082
@@ -37,10 +43,12 @@ services:
 
   payment:
     build: ./payment
-    image: <your-docker-username>/primebid-payment:latest
+    image: pawanjot52/primebid-payment:latest
     container_name: primebid-payment
     ports:
       - "8084:8084"
+    volumes:
+      - ./payment/data:/app/data
     environment:
       - SERVICES_IAMBASEURL=http://iam:8081
       - SERVICES_AUCTIONBASEURL=http://auction:8083
@@ -50,7 +58,7 @@ services:
 
   gateway:
     build: ./gateway
-    image: <your-docker-username>/primebid-gateway:latest
+    image: pawanjot52/primebid-gateway:latest
     container_name: primebid-gateway
     ports:
       - "8080:8080"
@@ -68,7 +76,7 @@ services:
 
   frontend:
     build: ./frontend
-    image: <your-docker-username>/primebid-frontend:latest
+    image: pawanjot52/primebid-frontend:latest
     container_name: primebid-frontend
     ports:
       - "3000:3000"
