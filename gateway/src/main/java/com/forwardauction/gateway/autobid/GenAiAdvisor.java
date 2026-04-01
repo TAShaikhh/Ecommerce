@@ -28,14 +28,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class GenAiAdvisor {
 
     private static final Logger log = LoggerFactory.getLogger(GenAiAdvisor.class);
-    private static final String GEMINI_URL =
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+    private static final String GEMINI_URL_TEMPLATE =
+            "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent";
 
     private final RestTemplate restTemplate;
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Value("${gemini.api-key:#{null}}")
     private String apiKey;
+
+    @Value("${gemini.model:gemini-2.5-flash}")
+    private String model;
 
     public GenAiAdvisor(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -264,7 +267,7 @@ public class GenAiAdvisor {
     }
 
     private String callGemini(String prompt) throws Exception {
-        String url = GEMINI_URL + "?key=" + apiKey;
+        String url = GEMINI_URL_TEMPLATE.formatted(model) + "?key=" + apiKey;
 
         // Build the Gemini API request body
         Map<String, Object> textPart = Map.of("text", prompt);
@@ -307,7 +310,7 @@ public class GenAiAdvisor {
 
             Map<String, Object> parsed = mapper.readValue(cleaned, Map.class);
             parsed.put("source", "GEMINI_AI");
-            parsed.put("model", "gemini-2.0-flash");
+            parsed.put("model", model);
 
             // Validate and clamp suggestedMaxBid within budget
             if (parsed.containsKey("suggestedMaxBid")) {

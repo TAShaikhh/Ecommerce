@@ -375,9 +375,9 @@ export default function AiBidAssistant({ itemId, isActive, currentHighestBid, to
                         </span>
                         {msg.role === 'ai' && msg.source && msg.source !== 'SYSTEM' && msg.source !== 'ERROR' && (
                           <span className={`text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded ${
-                            msg.source === 'GEMINI_AI' ? 'bg-teal-100 text-teal-600' : 'bg-zinc-100 text-zinc-500'
+                            msg.source.startsWith('GEMINI_AI') ? 'bg-teal-100 text-teal-600' : 'bg-zinc-100 text-zinc-500'
                           }`}>
-                            {msg.source === 'GEMINI_AI' ? 'AI' : 'Fallback'}
+                            {msg.source.startsWith('GEMINI_AI') ? 'AI' : 'Fallback'}
                           </span>
                         )}
                       </div>
