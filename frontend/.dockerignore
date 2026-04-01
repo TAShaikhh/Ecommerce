@@ -1,0 +1,8 @@
+.next
+node_modules
+npm-debug.log
+Dockerfile
+.git
+.gitignore
+playwright-report
+test-results

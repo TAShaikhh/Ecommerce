@@ -12,14 +12,13 @@ export default function NavBar() {
   const { user, token, logout, hydrate } = useAuthStore();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  if (pathname === '/login' || pathname === '/signup') {
-    return null;
-  }
+  const isAuthPage = pathname === '/login' || pathname === '/signup';
 
   useEffect(() => {
-    hydrate();
-  }, [hydrate]);
+    if (!isAuthPage) {
+      hydrate();
+    }
+  }, [hydrate, isAuthPage]);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -30,9 +29,12 @@ export default function NavBar() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
+    if (isAuthPage) {
+      return;
+    }
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isAuthPage]);
 
   const navLinks = [
     { label: 'Catalogue', path: '/catalogue', icon: Storefront },
@@ -43,6 +45,10 @@ export default function NavBar() {
         ]
       : []),
   ];
+
+  if (isAuthPage) {
+    return null;
+  }
 
   return (
     <motion.header
