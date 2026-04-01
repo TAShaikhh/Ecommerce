@@ -1,6 +1,6 @@
 # Individual Use Case Testing for macOS
 
-This file consolidates the setup and manual test steps from `README.md` and `TESTING_INSTRUCTIONS.md` for a MacBook environment so each use case can be tested individually.
+This document provides a manual macOS API walkthrough so each use case can be tested individually for Deliverable 3 submission review.
 
 ## 1. Prerequisites
 
@@ -306,20 +306,7 @@ curl "http://localhost:8080/receipt/$PAYMENT_ID" \
   -H "Authorization: Bearer $BUYER_TOKEN"
 ```
 
-## 8. Existing Helper Scripts
-
-These already exist in the repo if you want scripted checks instead of manual copy/paste:
-
-- `run_all.sh`
-- `scripts/main_flow/00_smoke.sh`
-- `scripts/main_flow/01_signup.sh`
-- `scripts/main_flow/02_login.sh`
-- `scripts/main_flow/03_uc7_create_item.sh`
-- `scripts/main_flow/full_flow.sh`
-- `scripts/robustness/test_robustness.sh`
-- `scripts/manual_curl_use_cases.sh`
-
-## 9. Recommended Order
+## 8. Recommended Order
 
 If you want to test everything manually in the right order:
 
@@ -338,7 +325,7 @@ If you want to test everything manually in the right order:
 13. Run UC5 payment page and payment
 14. Run UC6 receipt
 
-## 10. Notes
+## 9. Notes
 
 - `POST /bid` expects the bid `amount` to be an integer.
 - `POST /items` requires `auctionDurationSeconds` to be at least `10`.

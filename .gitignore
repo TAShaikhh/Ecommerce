@@ -19,3 +19,6 @@ tools/
 # OS/editor
 .DS_Store
 Thumbs.db
+
+# local secrets
+.env
