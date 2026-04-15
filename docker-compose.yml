@@ -1,0 +1,84 @@
+services:
+  iam:
+    build: ./iam
+    image: tashaikhh/primebid-iam:latest
+    container_name: primebid-iam
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./iam/data:/app/data
+    environment:
+      - SERVICES_GATEWAYBASEURL=http://gateway:8080
+
+  catalogue:
+    build: ./catalogue
+    image: tashaikhh/primebid-catalogue:latest
+    container_name: primebid-catalogue
+    ports:
+      - "8082:8082"
+    volumes:
+      - ./catalogue/data:/app/data
+    environment:
+      - SERVICES_IAMBASEURL=http://iam:8081
+      - SERVICES_AUCTIONBASEURL=http://auction:8083
+    depends_on:
+      - iam
+
+  auction:
+    build: ./auction
+    image: tashaikhh/primebid-auction:latest
+    container_name: primebid-auction
+    ports:
+      - "8083:8083"
+    volumes:
+      - ./auction/data:/app/data
+    environment:
+      - SERVICES_IAMBASEURL=http://iam:8081
+      - SERVICES_CATALOGUEBASEURL=http://catalogue:8082
+    depends_on:
+      - iam
+      - catalogue
+
+  payment:
+    build: ./payment
+    image: tashaikhh/primebid-payment:latest
+    container_name: primebid-payment
+    ports:
+      - "8084:8084"
+    volumes:
+      - ./payment/data:/app/data
+    environment:
+      - SERVICES_IAMBASEURL=http://iam:8081
+      - SERVICES_AUCTIONBASEURL=http://auction:8083
+    depends_on:
+      - iam
+      - auction
+
+  gateway:
+    build: ./gateway
+    image: tashaikhh/primebid-gateway:latest
+    container_name: primebid-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVICES_IAMBASEURL=http://iam:8081
+      - SERVICES_CATALOGUEBASEURL=http://catalogue:8082
+      - SERVICES_AUCTIONBASEURL=http://auction:8083
+      - SERVICES_PAYMENTBASEURL=http://payment:8084
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    depends_on:
+      - iam
+      - catalogue
+      - auction
+      - payment
+
+  frontend:
+    build: ./frontend
+    image: tashaikhh/primebid-frontend:latest
+    container_name: primebid-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8080
+    depends_on:
+      - gateway

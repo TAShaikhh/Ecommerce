@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <defs>
+    <style>
+      .title { font: 700 30px Georgia, "Times New Roman", serif; fill: #1f1f1f; }
+      .subtitle { font: 500 17px Georgia, "Times New Roman", serif; fill: #555; }
+      .axis { stroke: #444; stroke-width: 2; fill: none; }
+      .grid { stroke: #d8d8d8; stroke-width: 1; fill: none; }
+      .line { stroke: #355c7d; stroke-width: 4; fill: none; }
+      .dot { fill: #355c7d; stroke: #fff; stroke-width: 3; }
+      .tick { font: 500 15px Georgia, "Times New Roman", serif; fill: #333; }
+      .label { font: 600 18px Georgia, "Times New Roman", serif; fill: #222; }
+      .legend-title { font: 700 15px Georgia, "Times New Roman", serif; fill: #222; }
+      .legend-text { font: 500 14px Georgia, "Times New Roman", serif; fill: #333; }
+      .card { fill: #fffdf6; stroke: #b9b09a; stroke-width: 1.4; }
+      .table-head { fill: #f1efe8; stroke: #b9b09a; stroke-width: 1.2; }
+      .table-cell { fill: #fff; stroke: #d4cec0; stroke-width: 1; }
+      .table-text { font: 500 14px Georgia, "Times New Roman", serif; fill: #222; }
+      .foot { font: 500 13px Georgia, "Times New Roman", serif; fill: #555; }
+    </style>
+  </defs>
+
+  <rect width="1400" height="900" fill="#ffffff"/>
+
+  <text x="700" y="56" text-anchor="middle" class="title">PrimeBid Deliverable 3 - Performance Analysis</text>
+  <text x="700" y="86" text-anchor="middle" class="subtitle">Average Response Time (Tr) as a Function of Arrival Rate (λ)</text>
+
+  <!-- plot area -->
+  <rect x="110" y="130" width="860" height="600" fill="#fcfcfc" stroke="#d4d4d4" stroke-width="1.2"/>
+
+  <!-- horizontal grid -->
+  <line x1="110" y1="670" x2="970" y2="670" class="grid"/>
+  <line x1="110" y1="595" x2="970" y2="595" class="grid"/>
+  <line x1="110" y1="520" x2="970" y2="520" class="grid"/>
+  <line x1="110" y1="445" x2="970" y2="445" class="grid"/>
+  <line x1="110" y1="370" x2="970" y2="370" class="grid"/>
+  <line x1="110" y1="295" x2="970" y2="295" class="grid"/>
+  <line x1="110" y1="220" x2="970" y2="220" class="grid"/>
+  <line x1="110" y1="145" x2="970" y2="145" class="grid"/>
+
+  <!-- axes -->
+  <line x1="110" y1="730" x2="970" y2="730" class="axis"/>
+  <line x1="110" y1="130" x2="110" y2="730" class="axis"/>
+
+  <!-- y ticks -->
+  <text x="92" y="735" text-anchor="end" class="tick">0</text>
+  <text x="92" y="675" text-anchor="end" class="tick">250</text>
+  <text x="92" y="600" text-anchor="end" class="tick">500</text>
+  <text x="92" y="525" text-anchor="end" class="tick">750</text>
+  <text x="92" y="450" text-anchor="end" class="tick">1000</text>
+  <text x="92" y="375" text-anchor="end" class="tick">1250</text>
+  <text x="92" y="300" text-anchor="end" class="tick">1500</text>
+  <text x="92" y="225" text-anchor="end" class="tick">1750</text>
+  <text x="92" y="150" text-anchor="end" class="tick">2000</text>
+
+  <!-- x ticks -->
+  <text x="150" y="760" text-anchor="middle" class="tick">50</text>
+  <text x="363" y="760" text-anchor="middle" class="tick">200</text>
+  <text x="615" y="760" text-anchor="middle" class="tick">500</text>
+  <text x="937" y="760" text-anchor="middle" class="tick">900</text>
+
+  <!-- labels -->
+  <text x="540" y="815" text-anchor="middle" class="label">Arrival Rate λ (requests / second)</text>
+  <g transform="translate(34,430) rotate(-90)">
+    <text text-anchor="middle" class="label">Average Response Time Tr (ms)</text>
+  </g>
+
+  <!-- line series -->
+  <polyline class="line" points="150,712 363,681 615,589 937,220"/>
+  <circle cx="150" cy="712" r="8" class="dot"/>
+  <circle cx="363" cy="681" r="8" class="dot"/>
+  <circle cx="615" cy="589" r="8" class="dot"/>
+  <circle cx="937" cy="220" r="8" class="dot"/>
+
+  <!-- point labels -->
+  <rect x="122" y="678" width="70" height="28" rx="6" class="card"/>
+  <text x="157" y="697" text-anchor="middle" class="legend-text">60 ms</text>
+
+  <rect x="333" y="647" width="74" height="28" rx="6" class="card"/>
+  <text x="370" y="666" text-anchor="middle" class="legend-text">165 ms</text>
+
+  <rect x="583" y="555" width="74" height="28" rx="6" class="card"/>
+  <text x="620" y="574" text-anchor="middle" class="legend-text">470 ms</text>
+
+  <rect x="896" y="184" width="82" height="28" rx="6" class="card"/>
+  <text x="937" y="203" text-anchor="middle" class="legend-text">1700 ms</text>
+
+  <!-- legend -->
+  <rect x="990" y="148" width="330" height="110" rx="10" class="card"/>
+  <text x="1030" y="178" class="legend-title">Legend</text>
+  <line x1="1032" y1="208" x2="1092" y2="208" class="line"/>
+  <circle cx="1062" cy="208" r="7" class="dot"/>
+  <text x="1110" y="213" class="legend-text">Measured average</text>
+  <text x="1110" y="233" class="legend-text">response time</text>
+  <text x="1032" y="248" class="legend-text">Trend indicates non-linear latency growth</text>
+
+  <!-- summary card -->
+  <rect x="990" y="288" width="330" height="180" rx="10" class="card"/>
+  <text x="1030" y="320" class="legend-title">Interpretation</text>
+  <text x="1030" y="352" class="legend-text">Low traffic remains responsive.</text>
+  <text x="1030" y="378" class="legend-text">Latency starts rising noticeably at</text>
+  <text x="1030" y="400" class="legend-text">medium load, then increases sharply</text>
+  <text x="1030" y="422" class="legend-text">near 900 req/s, indicating saturation</text>
+  <text x="1030" y="444" class="legend-text">and write-lock / fan-out pressure.</text>
+
+  <!-- data table -->
+  <rect x="990" y="500" width="330" height="230" rx="10" class="card"/>
+  <text x="1030" y="530" class="legend-title">Observed Data</text>
+
+  <rect x="1030" y="548" width="120" height="36" class="table-head"/>
+  <rect x="1150" y="548" width="125" height="36" class="table-head"/>
+  <text x="1090" y="571" text-anchor="middle" class="table-text">λ (req/s)</text>
+  <text x="1212" y="571" text-anchor="middle" class="table-text">Tr (ms)</text>
+
+  <rect x="1030" y="584" width="120" height="34" class="table-cell"/>
+  <rect x="1150" y="584" width="125" height="34" class="table-cell"/>
+  <text x="1090" y="606" text-anchor="middle" class="table-text">50</text>
+  <text x="1212" y="606" text-anchor="middle" class="table-text">60</text>
+
+  <rect x="1030" y="618" width="120" height="34" class="table-cell"/>
+  <rect x="1150" y="618" width="125" height="34" class="table-cell"/>
+  <text x="1090" y="640" text-anchor="middle" class="table-text">200</text>
+  <text x="1212" y="640" text-anchor="middle" class="table-text">165</text>
+
+  <rect x="1030" y="652" width="120" height="34" class="table-cell"/>
+  <rect x="1150" y="652" width="125" height="34" class="table-cell"/>
+  <text x="1090" y="674" text-anchor="middle" class="table-text">500</text>
+  <text x="1212" y="674" text-anchor="middle" class="table-text">470</text>
+
+  <rect x="1030" y="686" width="120" height="34" class="table-cell"/>
+  <rect x="1150" y="686" width="125" height="34" class="table-cell"/>
+  <text x="1090" y="708" text-anchor="middle" class="table-text">900</text>
+  <text x="1212" y="708" text-anchor="middle" class="table-text">1700</text>
+
+  <text x="110" y="860" class="foot">Source: Deliverable 3 performance analysis data provided in Section 28.2.</text>
+</svg>

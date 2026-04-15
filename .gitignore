@@ -1,0 +1,24 @@
+# Runtime artifacts
+logs/
+*/data/
+*.db
+*.pid
+*.log
+Context/
+
+# Submission cleanup (keep only final submission-facing docs)
+DELIVERABLE_2_APPENDIX_PACK.md
+DELIVERABLE_2_REQUIREMENTS_MATRIX.md
+Deliverable-2-Report.md
+
+# Diagram sources/tooling (submission keeps rendered PNGs)
+docs/diagrams/*.puml
+docs/diagrams/README.md
+tools/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+
+# local secrets
+.env
